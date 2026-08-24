@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Humano — Brand Discovery</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: #f7f7f5;
+      color: #1a1a1a;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: #1a1a1a;
+      color: #fff;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-brand { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.5; }
+    .header-client { font-size: 15px; font-weight: 500; }
+
+    /* Progress */
+    .progress-bar-wrap {
+      background: #1a1a1a;
+      padding: 0 32px 16px;
+      position: sticky;
+      top: 61px;
+      z-index: 99;
+    }
+    .progress-track {
+      background: rgba(255,255,255,0.15);
+      border-radius: 99px;
+      height: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: #fff;
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .progress-label {
+      color: rgba(255,255,255,0.45);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* Main layout */
+    .main { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* Section card */
+    .section-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px 48px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      display: none;
+    }
+    .section-card.active { display: block; animation: fadeIn 0.25s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .section-description {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 36px;
+      line-height: 1.65;
+      border-left: 2px solid #e8e8e8;
+      padding-left: 16px;
+    }
+
+    /* Questions */
+    .question { margin-bottom: 32px; }
+    .question:last-child { margin-bottom: 0; }
+
+    .question-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .question-label .required { color: #c0392b; font-size: 13px; margin-top: 1px; }
+    .question-hint {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    /* Text inputs */
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      color: #1a1a1a;
+      background: #fafafa;
+      transition: border-color 0.2s, background 0.2s;
+      resize: vertical;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #1a1a1a;
+      background: #fff;
+    }
+    textarea { min-height: 100px; }
+    textarea.tall { min-height: 140px; }
+
+    /* Radio & Checkbox */
+    .options-list { display: flex; flex-direction: column; gap: 10px; }
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      background: #fafafa;
+    }
+    .option-item:hover { border-color: #999; background: #f0f0ee; }
+    .option-item input[type="radio"],
+    .option-item input[type="checkbox"] {
+      width: 18px; height: 18px; cursor: pointer; accent-color: #1a1a1a; flex-shrink: 0;
+    }
+    .option-item span { font-size: 15px; color: #1a1a1a; }
+    .option-item.selected { border-color: #1a1a1a; background: #f4f4f2; }
+
+    .checkbox-hint { font-size: 12px; color: #aaa; margin-bottom: 10px; }
+
+    /* Linear scale */
+    .scale-wrap { margin-top: 4px; }
+    .scale-labels { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .scale-labels span { font-size: 12px; color: #888; max-width: 40%; }
+    .scale-labels span:last-child { text-align: right; }
+    .scale-options { display: flex; gap: 8px; }
+    .scale-option {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .scale-option label {
+      font-size: 12px;
+      color: #888;
+      cursor: pointer;
+    }
+    .scale-option input[type="radio"] {
+      width: 20px; height: 20px; cursor: pointer; accent-color: #1a1a1a;
+    }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid #e8e8e8;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s, opacity 0.15s;
+      font-family: inherit;
+    }
+    .btn-primary { background: #1a1a1a; color: #fff; }
+    .btn-primary:hover { background: #333; }
+    .btn-secondary { background: transparent; color: #666; border: 1.5px solid #e0e0e0; }
+    .btn-secondary:hover { border-color: #999; color: #1a1a1a; }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* Completion screen */
+    .completion { text-align: center; padding: 16px 0 8px; }
+    .completion-icon { font-size: 48px; margin-bottom: 20px; }
+    .completion h2 { font-size: 26px; font-weight: 600; margin-bottom: 12px; }
+    .completion p { font-size: 16px; color: #555; margin-bottom: 32px; line-height: 1.65; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .completion-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-download { background: #1a1a1a; color: #fff; font-size: 15px; }
+    .btn-email { background: transparent; color: #1a1a1a; border: 1.5px solid #1a1a1a; font-size: 15px; }
+    .btn-email:hover { background: #f4f4f2; }
+
+    /* Validation */
+    .field-error { font-size: 12px; color: #c0392b; margin-top: 6px; display: none; }
+    .field-error.visible { display: block; }
+    input.invalid, textarea.invalid { border-color: #c0392b; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .section-card { padding: 28px 24px; }
+      .header { padding: 16px 20px; }
+      .progress-bar-wrap { padding: 0 20px 14px; }
+      .main { padding: 32px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-brand">KISSLabs Brand Discovery</span>
+  <span class="header-client">Humano</span>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">Section 1 of 10</div>
+</div>
+
+<div class="main">
+
+  <!-- ============================================================
+       SECTION 1: ABOUT YOU
+       ============================================================ -->
+  <div class="section-card active" data-section="1">
+    <div class="section-label">Section 1 of 10</div>
+    <h2 class="section-title">About you</h2>
+    <p class="section-description">Quick basics so we know who's answering. This is one of the shortest sections. From here on the questions get longer.</p>
+
+    <div class="question">
+      <div class="question-label">Your name <span class="required">*</span></div>
+      <input type="text" id="q_name" placeholder="First and last name" data-required="true">
+      <div class="field-error" id="err_q_name">Please enter your name.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Email address <span class="required">*</span></div>
+      <input type="email" id="q_email" placeholder="you@company.com" data-required="true" data-type="email">
+      <div class="field-error" id="err_q_email">Please enter a valid email address.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Your role in the project <span class="required">*</span></div>
+      <div class="question-hint">Founder, CTO, medical director, marketing lead. Whatever you're doing in the day-to-day.</div>
+      <input type="text" id="q_role" placeholder="e.g. Founder & CEO" data-required="true">
+      <div class="field-error" id="err_q_role">Please enter your role.</div>
+    </div>
+
+    <div class="nav">
+      <div></div>
+      <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 2: ABOUT HUMANO
+       ============================================================ -->
+  <div class="section-card" data-section="2">
+    <div class="section-label">Section 2 of 10</div>
+    <h2 class="section-title">About Humano</h2>
+    <p class="section-description">Before we get into detail, help us anchor the basics. What the product actually is, how you're framing it, and what you want customers to feel about it.</p>
+
+    <div class="question">
+      <div class="question-label">You're currently working with the name Humano. How locked in is it? <span class="required">*</span></div>
+      <div class="options-list" id="q_name_status" data-type="radio" data-required="true">
+        <label class="option-item">
+          <input type="radio" name="q_name_status" value="Locked. Humano is the brand name.">
+          <span>Locked. Humano is the brand name.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_name_status" value="Working name. Happy to keep it if it survives checks, open to alternatives.">
+          <span>Working name. Happy to keep it if it survives checks, open to alternatives.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_name_status" value="Genuinely open. Treat naming as part of this engagement.">
+          <span>Genuinely open. Treat naming as part of this engagement.</span>
+        </label>
+      </div>
+      <div class="field-error" id="err_q_name_status">Please select an option.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Describe Humano in one sentence that a first-time customer could repeat back to a friend. <span class="required">*</span></div>
+      <div class="question-hint">Plain English, no jargon. If you can't do it in one sentence, do two.</div>
+      <textarea id="q_one_sentence" placeholder="Humano is..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_one_sentence">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Now the longer version. What is Humano actually doing? <span class="required">*</span></div>
+      <div class="question-hint">Product mechanics, service loop, the whole picture. Assume the reader knows nothing about the space.</div>
+      <textarea id="q_long_description" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_long_description">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">What's the business model at launch, and what does it grow into? <span class="required">*</span></div>
+      <div class="question-hint">Where does the money come from on day one vs. year three. Blood work, supplements, prescriptions, subscription, branded products, something else.</div>
+      <textarea id="q_business_model" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_business_model">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">You don't have customers yet. What do you hope your first 100 customers will say about Humano, in their own words? <span class="required">*</span></div>
+      <textarea id="q_customer_quote" class="tall" placeholder="They'd say..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_customer_quote">This field is required.</div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 3: ORIGIN STORY
+       ============================================================ -->
+  <div class="section-card" data-section="3">
+    <div class="section-label">Section 3 of 10</div>
+    <h2 class="section-title">The origin story</h2>
+    <p class="section-description">The founding story is often the strongest asset a new brand has. Yours involves five years of personal bloodwork and building the thing you wished existed. Help us surface it properly.</p>
+
+    <div class="question">
+      <div class="question-label">If a journalist wrote 300 words about why Humano exists, what would you want them to say? <span class="required">*</span></div>
+      <div class="question-hint">The personal story. What you were doing before this, what wasn't working, what you were forced to build for yourself.</div>
+      <textarea id="q_journalist_story" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_journalist_story">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">What was the specific moment you decided this had to exist as a product, not just a personal setup? <span class="required">*</span></div>
+      <textarea id="q_moment" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_moment">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Why now? What's changed in the last 18 months that makes this the right time?</div>
+      <div class="question-hint">Optional. Skip if you don't have a strong view. AI, GLP-1s, changing consumer attitudes to hormones, all fair game.</div>
+      <textarea id="q_why_now" placeholder="Your answer..."></textarea>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 4: REGULATORY LANDSCAPE
+       ============================================================ -->
+  <div class="section-card" data-section="4">
+    <div class="section-label">Section 4 of 10</div>
+    <h2 class="section-title">Regulatory landscape</h2>
+    <p class="section-description">This is a regulated category. What you can legally say about outcomes will shape every line of copy, every tagline, every creative asset. Better to name it here than to keep hitting it later.</p>
+
+    <div class="question">
+      <div class="question-label">What claims can you legally make about outcomes right now? Where are the lines? <span class="required">*</span></div>
+      <div class="question-hint">If you don't fully know yet, tell us what your regulatory team has said so far, or what your working assumption is.</div>
+      <textarea id="q_claims" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_claims">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Are there phrases competitors use that you want to specifically match, or specifically avoid? <span class="required">*</span></div>
+      <div class="question-hint">Language like "boost testosterone", "reverse ageing", "optimise". Where do you sit on that spectrum, and why.</div>
+      <textarea id="q_competitor_language" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_competitor_language">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Long-term you want medical-device classification. How should the brand read today? <span class="required">*</span></div>
+      <div class="options-list" id="q_brand_positioning" data-type="radio" data-required="true">
+        <label class="option-item">
+          <input type="radio" name="q_brand_positioning" value="A wellness product now, that grows into a medical brand.">
+          <span>A wellness product now, that grows into a medical brand.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_brand_positioning" value="A medical brand from day one, that happens to be warm on the surface.">
+          <span>A medical brand from day one, that happens to be warm on the surface.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_brand_positioning" value="A performance / optimisation brand, medically credible but not medically framed.">
+          <span>A performance / optimisation brand, medically credible but not medically framed.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_brand_positioning" value="Not sure yet, want to discuss.">
+          <span>Not sure yet, want to discuss.</span>
+        </label>
+      </div>
+      <div class="field-error" id="err_q_brand_positioning">Please select an option.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Beyond customers, who else needs to take the brand seriously? <span class="required">*</span></div>
+      <div class="checkbox-hint">Select all that apply.</div>
+      <div class="options-list" id="q_secondary_audience" data-type="checkbox" data-required="true">
+        <label class="option-item">
+          <input type="checkbox" value="MHRA / regulators">
+          <span>MHRA / regulators</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="CQC / clinical inspectors">
+          <span>CQC / clinical inspectors</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="Medical directors / clinicians we want to hire">
+          <span>Medical directors / clinicians we want to hire</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="Retail pharmacy or health-retailer partners">
+          <span>Retail pharmacy or health-retailer partners</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="Enterprise / employer benefits buyers (future)">
+          <span>Enterprise / employer benefits buyers (future)</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="Investors">
+          <span>Investors</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="Press / journalists in health, tech and lifestyle">
+          <span>Press / journalists in health, tech and lifestyle</span>
+        </label>
+      </div>
+      <div class="field-error" id="err_q_secondary_audience">Please select at least one option.</div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 5: CATEGORY, COMPETITORS AND DIFFERENTIATION
+       ============================================================ -->
+  <div class="section-card" data-section="5">
+    <div class="section-label">Section 5 of 10</div>
+    <h2 class="section-title">Category, competitors and differentiation</h2>
+    <p class="section-description">Telehealth, biohacking, wellness, longevity, hormone therapy, GLP-1 delivery. All adjacent, all carry different associations. Help us understand which category customers will read you into, and which one you're actually trying to own.</p>
+
+    <div class="question">
+      <div class="question-label">What category do customers currently think Humano is in? Is that accurate? <span class="required">*</span></div>
+      <div class="question-hint">Sometimes the category the customer thinks they're buying matters more than the one you think you're in.</div>
+      <textarea id="q_perceived_category" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_perceived_category">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">You mentioned Hims, Voy, Superpower, Mino and Miro. Which do you most want to be compared to? Which do you want distance from? Why? <span class="required">*</span></div>
+      <textarea id="q_competitor_map" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_competitor_map">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">On the tonal spectrum, where should Humano sit? <span class="required">*</span></div>
+      <div class="question-hint">1 = Superhuman / Superpower (aggressive optimisation, capital-letter energy). 5 = Mino / Miro (soft, human, doesn't announce itself as AI). 3 = balanced between the two.</div>
+      <div class="scale-wrap">
+        <div class="scale-labels">
+          <span>Aggressive optimisation</span>
+          <span>Soft and human</span>
+        </div>
+        <div class="scale-options" id="q_tonal_spectrum" data-type="scale" data-required="true">
+          <div class="scale-option"><input type="radio" name="q_tonal_spectrum" value="1"><label>1</label></div>
+          <div class="scale-option"><input type="radio" name="q_tonal_spectrum" value="2"><label>2</label></div>
+          <div class="scale-option"><input type="radio" name="q_tonal_spectrum" value="3"><label>3</label></div>
+          <div class="scale-option"><input type="radio" name="q_tonal_spectrum" value="4"><label>4</label></div>
+          <div class="scale-option"><input type="radio" name="q_tonal_spectrum" value="5"><label>5</label></div>
+        </div>
+        <div class="field-error" id="err_q_tonal_spectrum">Please select a value.</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">What does a first-time customer need to understand before they'll take a blood test in the post? <span class="required">*</span></div>
+      <div class="question-hint">Category education question. If the answer is "quite a lot", the brand has more explaining to do than a Hims-style DTC.</div>
+      <textarea id="q_first_time_education" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_first_time_education">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">When a prospect compares Humano to your closest competitor, why should they choose you? <span class="required">*</span></div>
+      <textarea id="q_why_choose" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_why_choose">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">If you had to plant one flag in the ground, one promise Humano makes that no one else does, what is it? <span class="required">*</span></div>
+      <textarea id="q_flag_in_ground" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_flag_in_ground">This field is required.</div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 6: YOUR AUDIENCE
+       ============================================================ -->
+  <div class="section-card" data-section="6">
+    <div class="section-label">Section 6 of 10</div>
+    <h2 class="section-title">Your audience</h2>
+    <p class="section-description">Your launch audience is UK males on an optimisation frame. Not a generic persona. A specific type of person with a specific relationship to their own health. Help us picture them.</p>
+
+    <div class="question">
+      <div class="question-label">Sketch your primary launch customer as one realistic person. First name, roughly what they do, why they're in the market right now. <span class="required">*</span></div>
+      <div class="question-hint">Not a persona template. A person. If you have to name a friend or a customer archetype you've already spoken to, do that.</div>
+      <textarea id="q_persona" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_persona">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">What is their current relationship to their own health? <span class="required">*</span></div>
+      <div class="options-list" id="q_health_relationship" data-type="radio" data-required="true">
+        <label class="option-item">
+          <input type="radio" name="q_health_relationship" value="Peak-performance obsessed, tracks everything, already on wearables and supplements.">
+          <span>Peak-performance obsessed, tracks everything, already on wearables and supplements.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_health_relationship" value="Been feeling 'off' and wants answers.">
+          <span>Been feeling 'off' and wants answers.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_health_relationship" value="Actively managing a specific issue (hormones, weight, hair, sleep, ED).">
+          <span>Actively managing a specific issue (hormones, weight, hair, sleep, ED).</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_health_relationship" value="Preventative. Feels fine, wants to stay ahead.">
+          <span>Preventative. Feels fine, wants to stay ahead.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_health_relationship" value="Curious but not committed. Wouldn't call themselves a 'wellness person'.">
+          <span>Curious but not committed. Wouldn't call themselves a 'wellness person'.</span>
+        </label>
+      </div>
+      <div class="field-error" id="err_q_health_relationship">Please select an option.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Where does this person currently spend money on their health? <span class="required">*</span></div>
+      <div class="checkbox-hint">Select all that apply.</div>
+      <div class="options-list" id="q_current_spend" data-type="checkbox" data-required="true">
+        <label class="option-item">
+          <input type="checkbox" value="NHS only">
+          <span>NHS only</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="Private GP">
+          <span>Private GP</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="High-end clinic (Harley Street tier)">
+          <span>High-end clinic (Harley Street tier)</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="Supplements online">
+          <span>Supplements online</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="Biohacker subscriptions, wearables, sleep tech">
+          <span>Biohacker subscriptions, wearables, sleep tech</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="Gym / personal trainer / coach">
+          <span>Gym / personal trainer / coach</span>
+        </label>
+        <label class="option-item">
+          <input type="checkbox" value="Nothing yet, this would be their first spend">
+          <span>Nothing yet, this would be their first spend</span>
+        </label>
+      </div>
+      <div class="field-error" id="err_q_current_spend">Please select at least one option.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">What triggered this person to start looking for something like Humano this month? <span class="required">*</span></div>
+      <div class="question-hint">Trigger-to-purchase. Often more specific than a lifestyle. Turned 40, lost hair, saw a friend on GLP-1s, breakup, fatigue that won't shift.</div>
+      <textarea id="q_trigger" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_trigger">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">What's the objection that stops this person from signing up? <span class="required">*</span></div>
+      <div class="question-hint">Cost, trust in AI-driven advice, needle-phobia, cynicism about wellness, worried about being sold to. Anything.</div>
+      <textarea id="q_objection" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_objection">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Who is NOT the customer for Humano, and why? <span class="required">*</span></div>
+      <textarea id="q_not_customer" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_not_customer">This field is required.</div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 7: AUDIENCE PROFILE
+       ============================================================ -->
+  <div class="section-card" data-section="7">
+    <div class="section-label">Section 7 of 10</div>
+    <h2 class="section-title">Audience profile</h2>
+    <p class="section-description">The basics on that same person. Enough demographic detail to sanity-check the creative direction, without turning this into a marketing persona doc.</p>
+
+    <div class="question">
+      <div class="question-label">Age bracket <span class="required">*</span></div>
+      <div class="options-list" id="q_age" data-type="radio" data-required="true">
+        <label class="option-item"><input type="radio" name="q_age" value="Under 25"><span>Under 25</span></label>
+        <label class="option-item"><input type="radio" name="q_age" value="25–35"><span>25 to 35</span></label>
+        <label class="option-item"><input type="radio" name="q_age" value="35–50"><span>35 to 50</span></label>
+        <label class="option-item"><input type="radio" name="q_age" value="50–65"><span>50 to 65</span></label>
+        <label class="option-item"><input type="radio" name="q_age" value="Over 65"><span>Over 65</span></label>
+      </div>
+      <div class="field-error" id="err_q_age">Please select an option.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Gender at launch <span class="required">*</span></div>
+      <div class="question-hint">The brand is designed to work across sexes long-term. This is just about the launch marketing target.</div>
+      <div class="options-list" id="q_gender" data-type="radio" data-required="true">
+        <label class="option-item"><input type="radio" name="q_gender" value="Male"><span>Male</span></label>
+        <label class="option-item"><input type="radio" name="q_gender" value="Female"><span>Female</span></label>
+        <label class="option-item"><input type="radio" name="q_gender" value="Both, launching to both at once"><span>Both, launching to both at once</span></label>
+      </div>
+      <div class="field-error" id="err_q_gender">Please select an option.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Where do they live? <span class="required">*</span></div>
+      <div class="question-hint">One city or region for the launch cut.</div>
+      <input type="text" id="q_location" placeholder="e.g. London, wider UK, London and the South East" data-required="true">
+      <div class="field-error" id="err_q_location">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Rough occupation type <span class="required">*</span></div>
+      <div class="question-hint">Don't need a title. Founder / professional / creative / self-employed / corporate senior. Something that sketches their working life.</div>
+      <input type="text" id="q_occupation" placeholder="e.g. Founders and senior professionals, 35-50, London-based" data-required="true">
+      <div class="field-error" id="err_q_occupation">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Anything else about them that will change how the brand should feel?</div>
+      <textarea id="q_audience_extra" placeholder="Optional. Your answer..."></textarea>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 8: NAMING DIRECTION
+       ============================================================ -->
+  <div class="section-card" data-section="8">
+    <div class="section-label">Section 8 of 10</div>
+    <h2 class="section-title">Naming direction</h2>
+    <p class="section-description">Naming is phase one for this project. Even if Humano ends up being the answer, we want to test it against a proper brief. These questions give the naming exercise something to run against.</p>
+
+    <div class="question">
+      <div class="question-label">How attached are you to Humano? What do you like about it? What worries you? <span class="required">*</span></div>
+      <textarea id="q_humano_feelings" class="tall" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_humano_feelings">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">What names have you already considered and ruled out? Why?</div>
+      <div class="question-hint">Optional. Even a rough list saves us from re-running your existing thinking.</div>
+      <textarea id="q_ruled_out" placeholder="Your answer..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Which of these tonal targets is closest to what Humano should feel like? <span class="required">*</span></div>
+      <div class="options-list" id="q_naming_target" data-type="radio" data-required="true">
+        <label class="option-item">
+          <input type="radio" name="q_naming_target" value="Clinical and confident, like a lab (Superpower, Function, Everlywell).">
+          <span>Clinical and confident, like a lab. Superpower, Function, Everlywell.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_naming_target" value="Human and disarming, like a friend who knows their stuff (Mino, Ro, Numan).">
+          <span>Human and disarming, like a friend who knows their stuff. Mino, Ro, Numan.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_naming_target" value="Aspirational lifestyle, like a wellness brand (Alo, On, Athletic Greens).">
+          <span>Aspirational lifestyle, like a wellness brand. Alo, On, Athletic Greens.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_naming_target" value="Institutional and quiet, like a modern bank (Monzo, Wise, Robinhood).">
+          <span>Institutional and quiet, like a modern bank. Monzo, Wise, Robinhood.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_naming_target" value="A blend, or something else entirely. Explain in the next question.">
+          <span>A blend, or something else entirely. Explain in the next question.</span>
+        </label>
+      </div>
+      <div class="field-error" id="err_q_naming_target">Please select an option.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Words, associations or existing brands the name should stay well away from <span class="required">*</span></div>
+      <div class="question-hint">Superhero energy, pharma-heavy, gym-bro, medical-scary. Anything you want the name to avoid.</div>
+      <textarea id="q_naming_avoid" placeholder="Your answer..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_naming_avoid">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Domain tolerance <span class="required">*</span></div>
+      <div class="options-list" id="q_domain" data-type="radio" data-required="true">
+        <label class="option-item">
+          <input type="radio" name="q_domain" value="A .com is essential. Names without a plausible .com are out.">
+          <span>A .com is essential. Names without a plausible .com are out.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_domain" value=".com preferred but .co / .health / .app acceptable if the name is right.">
+          <span>.com preferred but .co / .health / .app acceptable if the name is right.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_domain" value="Willing to acquire a premium .com if the name is a real winner.">
+          <span>Willing to acquire a premium .com if the name is a real winner.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_domain" value="Domain is not the constraint. Trademark and phonetics matter more.">
+          <span>Domain is not the constraint. Trademark and phonetics matter more.</span>
+        </label>
+      </div>
+      <div class="field-error" id="err_q_domain">Please select an option.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Does the name need to work on physical product later? <span class="required">*</span></div>
+      <div class="question-hint">In the meeting you talked about Humano-branded caffeine shampoo. If that's the trajectory, the name has to sit on packaging next to household names.</div>
+      <div class="options-list" id="q_physical_product" data-type="radio" data-required="true">
+        <label class="option-item">
+          <input type="radio" name="q_physical_product" value="Yes. Physical product is the plan, name must survive on packaging.">
+          <span>Yes. Physical product is the plan, name must survive on packaging.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_physical_product" value="Maybe. Not day-one but should be designed with the option open.">
+          <span>Maybe. Not day-one but should be designed with the option open.</span>
+        </label>
+        <label class="option-item">
+          <input type="radio" name="q_physical_product" value="No. The app and service is the whole product. Name only needs to work digitally.">
+          <span>No. The app and service is the whole product. Name only needs to work digitally.</span>
+        </label>
+      </div>
+      <div class="field-error" id="err_q_physical_product">Please select an option.</div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 9: BRAND VALUES AND PERSONALITY
+       ============================================================ -->
+  <div class="section-card" data-section="9">
+    <div class="section-label">Section 9 of 10</div>
+    <h2 class="section-title">Brand values and personality</h2>
+    <p class="section-description">The words that describe how Humano should feel to a customer, and the brands whose customers feel like your customers.</p>
+
+    <div class="question">
+      <div class="question-label">Select up to five values Humano should stand for. <span class="required">*</span></div>
+      <div class="checkbox-hint">Pick five that matter most. Under is fine, over is not.</div>
+      <div class="options-list" id="q_values" data-type="checkbox" data-required="true" data-max="5">
+        <label class="option-item"><input type="checkbox" value="Rigour"><span>Rigour</span></label>
+        <label class="option-item"><input type="checkbox" value="Evidence-based"><span>Evidence-based</span></label>
+        <label class="option-item"><input type="checkbox" value="Personalisation"><span>Personalisation</span></label>
+        <label class="option-item"><input type="checkbox" value="Longevity"><span>Longevity</span></label>
+        <label class="option-item"><input type="checkbox" value="Optimisation"><span>Optimisation</span></label>
+        <label class="option-item"><input type="checkbox" value="Precision"><span>Precision</span></label>
+        <label class="option-item"><input type="checkbox" value="Discretion"><span>Discretion</span></label>
+        <label class="option-item"><input type="checkbox" value="Quality"><span>Quality</span></label>
+        <label class="option-item"><input type="checkbox" value="Authenticity"><span>Authenticity</span></label>
+        <label class="option-item"><input type="checkbox" value="Innovation"><span>Innovation</span></label>
+        <label class="option-item"><input type="checkbox" value="Responsibility"><span>Responsibility</span></label>
+        <label class="option-item"><input type="checkbox" value="Customer-centric"><span>Customer-centric</span></label>
+        <label class="option-item"><input type="checkbox" value="Empathy"><span>Empathy</span></label>
+        <label class="option-item"><input type="checkbox" value="Community"><span>Community</span></label>
+        <label class="option-item"><input type="checkbox" value="Integrity"><span>Integrity</span></label>
+        <label class="option-item"><input type="checkbox" value="Sustainability"><span>Sustainability</span></label>
+      </div>
+      <div class="field-error" id="err_q_values">Please select at least one value.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Select up to five adjectives that describe the personality Humano should have. <span class="required">*</span></div>
+      <div class="checkbox-hint">Same rule. Five max.</div>
+      <div class="options-list" id="q_adjectives" data-type="checkbox" data-required="true" data-max="5">
+        <label class="option-item"><input type="checkbox" value="Precise"><span>Precise</span></label>
+        <label class="option-item"><input type="checkbox" value="Rigorous"><span>Rigorous</span></label>
+        <label class="option-item"><input type="checkbox" value="Trusted"><span>Trusted</span></label>
+        <label class="option-item"><input type="checkbox" value="Calm"><span>Calm</span></label>
+        <label class="option-item"><input type="checkbox" value="Curious"><span>Curious</span></label>
+        <label class="option-item"><input type="checkbox" value="Considered"><span>Considered</span></label>
+        <label class="option-item"><input type="checkbox" value="Quietly confident"><span>Quietly confident</span></label>
+        <label class="option-item"><input type="checkbox" value="Human"><span>Human</span></label>
+        <label class="option-item"><input type="checkbox" value="Warm"><span>Warm</span></label>
+        <label class="option-item"><input type="checkbox" value="Approachable"><span>Approachable</span></label>
+        <label class="option-item"><input type="checkbox" value="Expert"><span>Expert</span></label>
+        <label class="option-item"><input type="checkbox" value="Sophisticated"><span>Sophisticated</span></label>
+        <label class="option-item"><input type="checkbox" value="Bold"><span>Bold</span></label>
+        <label class="option-item"><input type="checkbox" value="Clever"><span>Clever</span></label>
+        <label class="option-item"><input type="checkbox" value="Imaginative"><span>Imaginative</span></label>
+        <label class="option-item"><input type="checkbox" value="Playful"><span>Playful</span></label>
+        <label class="option-item"><input type="checkbox" value="Cool"><span>Cool</span></label>
+        <label class="option-item"><input type="checkbox" value="Edgy"><span>Edgy</span></label>
+      </div>
+      <div class="field-error" id="err_q_adjectives">Please select at least one adjective.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Three brands whose customers feel like your customers <span class="required">*</span></div>
+      <div class="question-hint">Not the brands you sell like. The brands you *feel* like. Any category. Explain why for each.</div>
+      <textarea id="q_inspiration_brands" class="tall" placeholder="1. Brand + why.&#10;2. Brand + why.&#10;3. Brand + why." data-required="true"></textarea>
+      <div class="field-error" id="err_q_inspiration_brands">This field is required.</div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Name three brands your target customer buys that are nothing to do with health, wellness or medicine. <span class="required">*</span></div>
+      <div class="question-hint">Cars, clothes, coffee, banking apps, hotels. Any category outside health. What do those three have in common?</div>
+      <textarea id="q_lifestyle_brands" class="tall" placeholder="Three brands + what they share..." data-required="true"></textarea>
+      <div class="field-error" id="err_q_lifestyle_brands">This field is required.</div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 10: DESIGN DIRECTION
+       ============================================================ -->
+  <div class="section-card" data-section="10">
+    <div class="section-label">Section 10 of 10</div>
+    <h2 class="section-title">Design direction</h2>
+    <p class="section-description">Last section. From the following polarities, help us understand where Humano should sit visually and tonally. There are no right or wrong answers. Go with your gut.</p>
+
+    <div class="question">
+      <div class="question-label">Clinical vs Human <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>Clinical</span><span>Human</span></div>
+        <div class="scale-options" id="q_scale_clinical" data-type="scale" data-required="true">
+          <div class="scale-option"><input type="radio" name="q_scale_clinical" value="1"><label>1</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_clinical" value="2"><label>2</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_clinical" value="3"><label>3</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_clinical" value="4"><label>4</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_clinical" value="5"><label>5</label></div>
+        </div>
+        <div class="field-error" id="err_q_scale_clinical">Please select a value.</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Precision vs Warmth <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>Precision</span><span>Warmth</span></div>
+        <div class="scale-options" id="q_scale_precision" data-type="scale" data-required="true">
+          <div class="scale-option"><input type="radio" name="q_scale_precision" value="1"><label>1</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_precision" value="2"><label>2</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_precision" value="3"><label>3</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_precision" value="4"><label>4</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_precision" value="5"><label>5</label></div>
+        </div>
+        <div class="field-error" id="err_q_scale_precision">Please select a value.</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Peak-performance vs Balance and longevity <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>Peak-performance</span><span>Balance & longevity</span></div>
+        <div class="scale-options" id="q_scale_peak" data-type="scale" data-required="true">
+          <div class="scale-option"><input type="radio" name="q_scale_peak" value="1"><label>1</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_peak" value="2"><label>2</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_peak" value="3"><label>3</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_peak" value="4"><label>4</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_peak" value="5"><label>5</label></div>
+        </div>
+        <div class="field-error" id="err_q_scale_peak">Please select a value.</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Cutting-edge vs Trusted and established <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>Cutting-edge</span><span>Trusted & established</span></div>
+        <div class="scale-options" id="q_scale_edge" data-type="scale" data-required="true">
+          <div class="scale-option"><input type="radio" name="q_scale_edge" value="1"><label>1</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_edge" value="2"><label>2</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_edge" value="3"><label>3</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_edge" value="4"><label>4</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_edge" value="5"><label>5</label></div>
+        </div>
+        <div class="field-error" id="err_q_scale_edge">Please select a value.</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Institutional vs Personal <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>Institutional</span><span>Personal</span></div>
+        <div class="scale-options" id="q_scale_institutional" data-type="scale" data-required="true">
+          <div class="scale-option"><input type="radio" name="q_scale_institutional" value="1"><label>1</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_institutional" value="2"><label>2</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_institutional" value="3"><label>3</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_institutional" value="4"><label>4</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_institutional" value="5"><label>5</label></div>
+        </div>
+        <div class="field-error" id="err_q_scale_institutional">Please select a value.</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Subtle vs Expressive <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>Subtle</span><span>Expressive</span></div>
+        <div class="scale-options" id="q_scale_subtle" data-type="scale" data-required="true">
+          <div class="scale-option"><input type="radio" name="q_scale_subtle" value="1"><label>1</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_subtle" value="2"><label>2</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_subtle" value="3"><label>3</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_subtle" value="4"><label>4</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_subtle" value="5"><label>5</label></div>
+        </div>
+        <div class="field-error" id="err_q_scale_subtle">Please select a value.</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Serious vs Playful <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>Serious</span><span>Playful</span></div>
+        <div class="scale-options" id="q_scale_serious" data-type="scale" data-required="true">
+          <div class="scale-option"><input type="radio" name="q_scale_serious" value="1"><label>1</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_serious" value="2"><label>2</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_serious" value="3"><label>3</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_serious" value="4"><label>4</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_serious" value="5"><label>5</label></div>
+        </div>
+        <div class="field-error" id="err_q_scale_serious">Please select a value.</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Simple vs Complex <span class="required">*</span></div>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>Simple</span><span>Complex</span></div>
+        <div class="scale-options" id="q_scale_simple" data-type="scale" data-required="true">
+          <div class="scale-option"><input type="radio" name="q_scale_simple" value="1"><label>1</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_simple" value="2"><label>2</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_simple" value="3"><label>3</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_simple" value="4"><label>4</label></div>
+          <div class="scale-option"><input type="radio" name="q_scale_simple" value="5"><label>5</label></div>
+        </div>
+        <div class="field-error" id="err_q_scale_simple">Please select a value.</div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-label">Anything else about the visual direction we should know before we start?</div>
+      <div class="question-hint">Optional. Colours you love or loathe, typography preferences, references you keep saving. Not a brief, just a signal.</div>
+      <textarea id="q_visual_extra" placeholder="Optional. Your answer..."></textarea>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+      <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Submit →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION 11: COMPLETION
+       ============================================================ -->
+  <div class="section-card" data-section="11">
+    <div class="completion">
+      <div class="completion-icon">✓</div>
+      <h2>That's everything.</h2>
+      <p>Your responses have been submitted to KISSLabs. We'll be in touch shortly with the next step. You can save a copy for your own records below.</p>
+      <div class="completion-actions">
+        <button class="btn btn-download" onclick="downloadCSV()">↓ Save a copy (CSV)</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+  // ─── State ──────────────────────────────────────────────────────────────────
+  const TOTAL_SECTIONS = 11;
+  const CLIENT_NAME = "Humano";
+  const FORMSPREE = "https://formspree.io/f/mnjwjvnb";
+  let currentSection = 1;
+
+  // ─── Navigation ─────────────────────────────────────────────────────────────
+  function showSection(n) {
+    document.querySelectorAll('.section-card').forEach(el => el.classList.remove('active'));
+    const target = document.querySelector(`[data-section="${n}"]`);
+    if (target) { target.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    currentSection = n;
+    updateProgress();
+  }
+
+  function nextSection() {
+    if (!validateSection(currentSection)) return;
+    showSection(currentSection + 1);
+  }
+
+  function prevSection() {
+    showSection(currentSection - 1);
+  }
+
+  function updateProgress() {
+    const pct = ((currentSection - 1) / (TOTAL_SECTIONS - 1)) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    const isComplete = currentSection === TOTAL_SECTIONS;
+    document.getElementById('progressLabel').textContent = isComplete
+      ? 'Completed'
+      : `Section ${currentSection} of ${TOTAL_SECTIONS - 1}`;
+  }
+
+  // ─── Validation ─────────────────────────────────────────────────────────────
+  function validateSection(n) {
+    const section = document.querySelector(`[data-section="${n}"]`);
+    let valid = true;
+
+    // Text / textarea
+    section.querySelectorAll('input[data-required="true"], textarea[data-required="true"]').forEach(el => {
+      const err = document.getElementById('err_' + el.id);
+      if (!el.value.trim()) {
+        el.classList.add('invalid');
+        if (err) err.classList.add('visible');
+        valid = false;
+      } else {
+        el.classList.remove('invalid');
+        if (err) err.classList.remove('visible');
+      }
+      // Email validation
+      if (el.dataset.type === 'email' && el.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) {
+        el.classList.add('invalid');
+        if (err) { err.textContent = 'Please enter a valid email address.'; err.classList.add('visible'); }
+        valid = false;
+      }
+    });
+
+    // Radio / scale
+    section.querySelectorAll('[data-type="radio"][data-required="true"], [data-type="scale"][data-required="true"]').forEach(el => {
+      const err = document.getElementById('err_' + el.id);
+      const checked = el.querySelector('input[type="radio"]:checked');
+      if (!checked) {
+        if (err) err.classList.add('visible');
+        valid = false;
+      } else {
+        if (err) err.classList.remove('visible');
+      }
+    });
+
+    // Checkboxes
+    section.querySelectorAll('[data-type="checkbox"][data-required="true"]').forEach(el => {
+      const err = document.getElementById('err_' + el.id);
+      const checked = el.querySelectorAll('input[type="checkbox"]:checked');
+      if (checked.length === 0) {
+        if (err) err.classList.add('visible');
+        valid = false;
+      } else {
+        if (err) err.classList.remove('visible');
+      }
+    });
+
+    return valid;
+  }
+
+  // ─── Checkbox max enforcement ────────────────────────────────────────────────
+  document.addEventListener('change', function(e) {
+    if (e.target.type !== 'checkbox') return;
+    const group = e.target.closest('[data-type="checkbox"]');
+    if (!group || !group.dataset.max) return;
+    const max = parseInt(group.dataset.max);
+    const checked = group.querySelectorAll('input[type="checkbox"]:checked');
+    if (checked.length > max) { e.target.checked = false; }
+    group.querySelectorAll('.option-item').forEach(item => {
+      item.classList.toggle('selected', item.querySelector('input').checked);
+    });
+  });
+
+  // Radio selected styling
+  document.addEventListener('change', function(e) {
+    if (e.target.type !== 'radio') return;
+    const group = e.target.closest('.options-list');
+    if (!group) return;
+    group.querySelectorAll('.option-item').forEach(item => {
+      item.classList.toggle('selected', item.querySelector('input') === e.target);
+    });
+  });
+
+  // ─── Collect all responses ───────────────────────────────────────────────────
+  function collectResponses() {
+    const responses = [];
+
+    document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(el => {
+      if (!el.id || el.id.startsWith('err_')) return;
+      const label = el.closest('.question')?.querySelector('.question-label')?.innerText?.replace('*', '').trim() || el.id;
+      responses.push({ question: label, answer: el.value.trim() });
+    });
+
+    document.querySelectorAll('[data-type="radio"]').forEach(el => {
+      const label = el.closest('.question')?.querySelector('.question-label')?.innerText?.replace('*', '').trim() || el.id;
+      const checked = el.querySelector('input[type="radio"]:checked');
+      responses.push({ question: label, answer: checked ? checked.value : '' });
+    });
+
+    document.querySelectorAll('[data-type="scale"]').forEach(el => {
+      const scaleWrap = el.closest('.question');
+      const labels = scaleWrap.querySelectorAll('.scale-labels span');
+      const left = labels[0]?.innerText || '';
+      const right = labels[1]?.innerText || '';
+      const checked = el.querySelector('input[type="radio"]:checked');
+      responses.push({ question: `${left} ↔ ${right}`, answer: checked ? checked.value : '' });
+    });
+
+    document.querySelectorAll('[data-type="checkbox"]').forEach(el => {
+      const label = el.closest('.question')?.querySelector('.question-label')?.innerText?.replace('*', '').trim() || el.id;
+      const selected = Array.from(el.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+      responses.push({ question: label, answer: selected.join(', ') });
+    });
+
+    return responses;
+  }
+
+  // ─── Download CSV ────────────────────────────────────────────────────────────
+  function downloadCSV() {
+    const responses = collectResponses();
+    const date = new Date().toISOString().split('T')[0];
+    const name = document.getElementById('q_name')?.value?.trim() || 'respondent';
+    const safeName = name.replace(/[^a-z0-9]/gi, '_');
+    const safeClient = CLIENT_NAME.replace(/[^a-z0-9]/gi, '_');
+
+    const rows = [['Question', 'Answer']];
+    responses.forEach(r => {
+      const q = '"' + r.question.replace(/"/g, '""') + '"';
+      const a = '"' + r.answer.replace(/"/g, '""') + '"';
+      rows.push([q, a]);
+    });
+
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${safeClient}_BrandDiscovery_${safeName}_${date}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ─── Submit via Formspree ────────────────────────────────────────────────────
+  async function submitForm() {
+    if (!validateSection(currentSection)) return;
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Submitting…';
+    btn.disabled = true;
+
+    const responses = collectResponses();
+    const name = document.getElementById('q_name')?.value?.trim() || 'Respondent';
+    const email = document.getElementById('q_email')?.value?.trim() || '';
+
+    const payload = {
+      _subject: `Brand Discovery — Humano — ${name}`,
+      _replyto: email
+    };
+    responses.forEach(r => { if (r.answer) payload[r.question] = r.answer; });
+
+    try {
+      const res = await fetch(FORMSPREE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        nextSection();
+      } else {
+        btn.textContent = 'Submit →';
+        btn.disabled = false;
+        alert('Something went wrong. Please try again, or download your responses and email them to caspianievers@me.com.');
+      }
+    } catch(e) {
+      btn.textContent = 'Submit →';
+      btn.disabled = false;
+      alert('Something went wrong. Please try again, or download your responses and email them to caspianievers@me.com.');
+    }
+  }
+
+  // ─── Init ────────────────────────────────────────────────────────────────────
+  updateProgress();
+</script>
+
+</body>
+</html>
